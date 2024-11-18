@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "kPfj3GKGG/mEq9JGO39MUv1b31EDcHfp2ZP/ACeqaEm2FeNG7CC/61/80ec85MAEkRlHLaCP7n4JlmqddCmcsQ==",
+  "success": true,
+  "projectFilePath": "/Users/Treasure/Desktop/Iteration 7/Iteration 7.1/Iteration 7.1.csproj",
+  "expectedPackageFiles": [
+    "/Users/Treasure/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.31/microsoft.aspnetcore.app.ref.6.0.31.nupkg.sha512",
+    "/Users/Treasure/.nuget/packages/microsoft.netcore.app.host.osx-arm64/6.0.31/microsoft.netcore.app.host.osx-arm64.6.0.31.nupkg.sha512",
+    "/Users/Treasure/.nuget/packages/microsoft.netcore.app.ref/6.0.31/microsoft.netcore.app.ref.6.0.31.nupkg.sha512"
+  ],
+  "logs": []
+}
