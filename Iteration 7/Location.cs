@@ -1,80 +1,105 @@
 ﻿using System;
-namespace Iteration_7._1
+using System.Collections.Generic;
+using Swin_Adventure;
+using System.Xml.Linq;
+using Iteration_7._1;
+
+namespace SwinAdventure
 {
-    public class Locations : GameObject, IHaveInventory
+    public class Location : GameObject, IHaveInventory
     {
         private Inventory _inventory;
-        List<Path> _path = new List<Path>();
-        public Locations(string[] idents, string name, string description) : base(new string[] { "room", "here" }, name, description)
+        private List<GamePath> _paths;
+
+        public Location(string name, string desc) : base(new string[] { name }, name, desc)
         {
             _inventory = new Inventory();
+            _paths = new List<GamePath>();
         }
 
-        public void AddPath(Path path)
-        {
-            _path.Add(path);
-        }
         public GameObject Locate(string id)
         {
+            // Check if the current location matches the ID
             if (AreYou(id))
             {
                 return this;
             }
-            else if (_inventory.HasItem(id))
-            {
-                return _inventory.Fetch(id);
-            }
-            else
-            {
-                return null;
-            }
-            /*  else if (_path.Count >= 1)
-              {
-                  foreach (Path path in _path)
-                  {
-                      if (path.AreYou(id))
-                      {
-                          return path;
-                      }
-                  }
-                  return null;
-              }
-              else
-              {
-                  return _inventory.Fetch(id);
-              }*/
-        }
 
-        public Path? GetPath(string direction)
-        {
-            foreach (Path path in _path)
+            // Check for a path that matches the direction or destination name
+            foreach (GamePath p in _paths)
             {
-                if (path.AreYou(direction))
+                // Match direction (FirstID) or destination name
+                if (p.FirstID.Equals(id, StringComparison.OrdinalIgnoreCase) ||
+                    p.Destination.Name.Equals(id, StringComparison.OrdinalIgnoreCase))
                 {
-                    return path;
+                    return p;
                 }
             }
-            return null;
+
+            // If no path matches, check the inventory
+            return _inventory.Fetch(id);
         }
+
+
+        public string PathList
+        {
+            get
+            {
+                if (_paths.Count == 0)
+                {
+                    return "There are no available paths.\n";
+                }
+
+                string list = "Available paths: ";
+
+                for (int i = 0; i < _paths.Count; i++)
+                {
+                    // Use FirstID for direction and Destination.Name for the name of the destination
+                    if (i == _paths.Count - 1)
+                    {
+                        list += _paths[i].FirstID + " (" + _paths[i].Destination.Name + ").";
+                    }
+                    else
+                    {
+                        list += _paths[i].FirstID + " (" + _paths[i].Destination.Name + "), ";
+                    }
+                }
+
+                return list;
+            }
+        }
+
+
+        public override string ShortDescription
+        {
+            get
+            {
+                return " " + base.FullDescription;
+            }
+        }
+
         public override string FullDescription
         {
             get
             {
-                return $"You are in {Name} {base.FullDescription}\n In this room you can see:\n" + _inventory.ItemList;
+                return $"\nYou are in {Name}.\n{base.FullDescription}\nIn this place you can see:\n{_inventory.ItemList}\n{PathList}";
             }
         }
-        public Inventory inventory
+
+        public Inventory Inventory
         {
-            get
-            {
-                return _inventory;
-            }
+            get => _inventory;
         }
-        public Item FetchItem(string id)
+
+        // Method to add a path to this location
+        public void AddPath(GamePath path)
         {
-            return _inventory.Fetch(id);
+            _paths.Add(path);
         }
+
     }
 }
+
+
 
 

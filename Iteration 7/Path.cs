@@ -1,35 +1,54 @@
-﻿using System;
-using System.Numerics;
+﻿using Iteration_7._1;
+using Swin_Adventure;
 
-namespace Iteration_7._1
+namespace SwinAdventure
 {
-    public class Path : GameObject
+    public class GamePath : GameObject
     {
-        private Locations _locations;
-        bool _locked;
-        public Path(string[] idents, string name, string desc, Locations locations) : base(idents, name, desc)
+        private Location _source;
+        private Location _destination;
+        private bool _isLocked;
+
+        public GamePath(string[] ids, string name, string description, Location source, Location destination, bool isLocked = false) : base(ids, name, description)
         {
-            _locations = locations;
+            _source = source;
+            _destination = destination;
+            _isLocked = isLocked;
+
+            AddIdentifier(destination.Name);
+
+            _source.AddPath(this);
         }
 
+
+        public Location Destination => _destination;
+        public Location Source => _source;
+
+        public bool IsLocked
+        {
+            get => _isLocked;
+            set => _isLocked = value;
+        }
+
+        // Method to move player through the path
         public string Move(Player player)
         {
-            if (Locations != null)
+            if (_isLocked)
             {
-                player.Locations = Locations;
-                return $"You have moved to {Locations.Name}";
+                return "This path is locked. You cannot go that way.";
             }
-            return "The path lead to nowhere.";
-        }
 
-        public Locations Locations
-        {
-            get
+            if (player.Location != _source)
             {
-                return _locations;
+                return "You cannot go that way from here.";
             }
+
+            player.Location = _destination;
+            return $"You move {FirstID} to {_destination.Name}." + _destination.FullDescription;
         }
-
-
     }
 }
+
+
+
+

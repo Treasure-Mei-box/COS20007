@@ -1,97 +1,126 @@
 ﻿using System;
+using Iteration_7._1;
+using Swin_Adventure;
+using SwinAdventure;
 
-namespace Iteration_7._1
+namespace SwinAdventure
 {
-    public class Program
+    class Program
     {
         static void Main(string[] args)
         {
-            string name;
-            string description;
-            Player player;
-            Locations locations;
+            // Greeting and Player Creation
+            Console.WriteLine("Welcome to SwinAdventure!");
 
-
-            Console.WriteLine("Welcome to Swin Adventure!");
-            Console.WriteLine("Enter Player Name: ");
-            name = Console.ReadLine();
-            Console.WriteLine("Enter Player's Description: ");
-            description = Console.ReadLine();
-            player = new Player(name, description);
-
-
-            Item sword = new(new string[] { "sword", "bronze" }, "a bronze Sword", "A sharp sword.");
-            Item shovel = new(new string[] { "shovel", "metal" }, "a metal Shovel", "A heavy shovel.");
-        
-            player.Inventory.Put(sword);
-            player.Inventory.Put(shovel);
-
-
-            Bag bag = new Bag(new string[] { "bag" }, "bag", "This is a cloth bag.");
-            player.Inventory.Put(bag);
-
-            Item diamond = new Item(new string[] { "diamond" }, "diamonds", " This is my diamond.");
-            bag.inventory.Put(diamond);
-
-            Item chair = new Item(new string[] { "chair " }, "chair ", " This is a wooden chair.");
-            Locations mylodge = new Locations(new string[] { "mylodge" }, "mylodge", "My Lodge");
-            mylodge.inventory.Put(chair);
-            player.Locations = mylodge;
-
-            Item snake = new Item(new string[] { "snake" }, "snake", " A small but poisonous snake.");
-            Locations dessert = new Locations(new string[] { "dessert " }, "dessert ", "A hot and dry dessert");
-            dessert.inventory.Put(snake);
-
-            Locations jungle = new Locations(new string[] { " jungle" }, " jungle", "A dark jungle");
-            Item gem = new Item(new string[] { " gem" }, " gem", " Hidden gem can be found.");
-            jungle.inventory.Put(gem);
-
-            Locations garden = new Locations(new string[] { " garden" }, " garden", "A harvestable garden");
-            Item crop = new Item(new string[] { "crop" }, " crop", "Harvestable crops");
-            garden.inventory.Put(crop);
-
-            Path lodgeTogarden = new Path(new string[] { "east", "e" }, "Door to Garden","Travel to garden", garden);
-            Path gardenToLodge = new Path(new string[] { "west", "w" }, "Door to Lodge","Travel to Lodge", mylodge);
-            Path jungleTogarden = new Path(new string[] { "north", "n" }, "Path to Garden", "Travel back to garden", garden);
-            Path gardenToJungle = new Path(new string[] { "south", "s" }, "Path to Jungle", "Travel to Jungle" , jungle);
-            Path lodgeToJungle = new Path(new string[] { "west", "w" }, "Path to Jungle", "Travel to path" , jungle);
-            Path jungleTodessert = new Path(new string[] { "south", "s" }, "Path to Desert", "Travel to dessert" , dessert);
-            Path desertToJungle = new Path(new string[] { "north", "n" }, "Path to Jungle", "Travel to dessert", jungle); // Reverse path
-
-            // Add paths to locations 
-            mylodge.AddPath(lodgeTogarden);  // Lodge to Garden (East)
-            garden.AddPath(gardenToLodge);   // Garden to Lodge (West)
-            jungle.AddPath(jungleTogarden);  // Jungle to Garden (North)
-            garden.AddPath(gardenToJungle);  // Garden to Jungle (South)
-            mylodge.AddPath(lodgeToJungle);  // Lodge to Jungle (West)
-            jungle.AddPath(jungleTodessert);  // Jungle to Desert (South)
-            dessert.AddPath(desertToJungle);  // Desert to Jungle (North)
-
-            bool quit = false;
-            string command;
-            LookCommand look = new LookCommand();
-            MoveCommand move = new MoveCommand(new string[] { "move", "go", "leave", "head" });
-
-            while (!quit)
+            // Player's name
+            Console.Write("Enter your name: ");
+            string playerName = Console.ReadLine();
+            if (string.IsNullOrEmpty(playerName))
             {
-                Console.WriteLine("Enter a command: ");
-                command = Console.ReadLine();
+                playerName = "NewPlayer";
+            }
 
-                if (command == "quit")
+            // Player's description
+            Console.Write("Enter a description for your player: ");
+            string playerDescription = Console.ReadLine();
+            if (string.IsNullOrEmpty(playerDescription))
+            {
+                playerDescription = "No description provided.";
+            }
+
+            // Create Locations
+            Location mylodge = new Location("mylodge", "My cozy Lodge.");
+            Location dessert = new Location("dessert ", "A hot and dry dessert.");
+            Location jungle = new Location(" jungle", "A dark jungle.");
+
+            // Create paths between locations
+            GamePath mylodgetojungle = new GamePath(new string[] { "north", "jungle" }, "A Cozy lodge with minimalist style", "A dark and cool jungle where plenty of tall trees ", mylodge, jungle);
+            GamePath jungletodessert = new GamePath(new string[] { "south", "dessert" }, "A dark and cool jungle where plenty of tall trees", "A very hot and dry dessert.", jungle, dessert);
+            GamePath mylodgetodessert = new GamePath(new string[] { "east", "dessert" }, "A Cozy lodge with minimalist style", "A very hot and dry dessert..", mylodge, dessert);
+            GamePath dessertomylodge = new GamePath(new string[] { "west", "mylodge" }, "A very hot and dry dessert..", "A Cozy lodge with minimalist style", dessert, mylodge);
+
+
+            // Add items to locations
+            Item chair = new Item(new string[] { "chair" }, "a wooden chair", "A big wooden chair even suitable for sleeping");
+            Item snake = new Item(new string[] { "snake" }, "a snake", "A small green snake but poisonous.");
+            Item gem = new Item(new string[] { "gem" }, "a gem", "A shiny gem can be found if you are lucky");
+
+            // Add items to the appropriate locations
+            mylodge.Inventory.Put(chair);
+            dessert.Inventory.Put(snake);
+            jungle.Inventory.Put(gem);
+
+            // Create and add player's initial items
+            Item shovel = new Item(new string[] { "shovel" }, "a shovel", "A rusty shovel with a worn handle.");
+            Item sword = new Item(new string[] { "sword" }, "a bronze sword", "A finely crafted steel sword with an ornate hilt.");
+
+            // Create Player
+            Player player = new Player(playerName, playerDescription);
+
+            player.Inventory.Put(shovel);
+            player.Inventory.Put(sword);
+
+            // Create and add bag
+            Bag bag = new Bag(new string[] { "bag" }, "a cloth bag", "A small brown cloth bag.");
+            player.Inventory.Put(bag);
+            Item bottle = new Item(new string[] { "bottle" }, "a small water bottle", "A small water bottle with full of water");
+            bag.Inventory.Put(bottle);
+
+            // Set initial location
+            player.Location = mylodge;
+
+            // Create command
+            LookCommand lookCommand = new LookCommand();
+            MoveCommand moveCommand = new MoveCommand();
+
+
+            // Display initial state and commands
+            Console.WriteLine("\nGame started!");
+            Console.WriteLine("Available commands:");
+            Console.WriteLine("- 'look' : Look around your current location");
+            Console.WriteLine("- 'look at [item]' : Examine an item");
+            Console.WriteLine("- 'look at [item] in [container]' : Look at an item in a container");
+            Console.WriteLine("- 'inventory' : Check your inventory");
+            Console.WriteLine("\nMovement commands:");
+            Console.WriteLine("Use any of the following to move in a specific direction:");
+            Console.WriteLine("- 'move [direction]'");
+            Console.WriteLine("- 'go [direction]'");
+            Console.WriteLine("- 'head [direction]'");
+            Console.WriteLine("Example: 'move jungle', 'go dessery', 'head mylodge'.");
+            Console.WriteLine("- 'quit' or 'exit' : Exit the game");
+
+            Console.WriteLine($"{player.Location.FullDescription}");
+            Console.WriteLine("What would you like to do?");
+
+
+            while (true)
+            {
+                Console.Write("Enter command: ");
+                string input = Console.ReadLine().ToLower();
+
+                // Exit the game if the input is empty or "quit"
+                if (string.IsNullOrEmpty(input) || input == "quit" || input == "exit") break;
+
+                string[] commandWords = input.Split(' ');
+                string keyword = commandWords[0];
+
+                // Use conditional statements to determine which command to execute
+                if (keyword == "look" || keyword == "inventory")
                 {
-                    quit = true;
+                    string result = lookCommand.Execute(player, commandWords);
+                    Console.WriteLine(result);
                 }
-                else if (command.StartsWith("move") || command.StartsWith("go") || command.StartsWith("leave") || command.StartsWith("head"))
+                else if (keyword == "move" || keyword == "go" || keyword == "head")
                 {
-                    Console.WriteLine(move.Execute(player, command.Split(" ")));
+                    string result = moveCommand.Execute(player, commandWords);
+                    Console.WriteLine(result);
                 }
                 else
                 {
-                    Console.WriteLine(look.Execute(player, command.Split(" ")));
+                    Console.WriteLine("\nUnknown command. Valid options are 'look' or 'move', 'go', 'head'.");
                 }
             }
+            Console.WriteLine("\nThanks for playing SwinAdventure!");
         }
     }
 }
-
-
