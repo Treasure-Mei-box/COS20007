@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using Village;
+
 namespace Village
 {
     public class Game
@@ -66,7 +67,7 @@ namespace Village
         {
             Console.Clear(); // Clear the screen before displaying player info
             Console.WriteLine("===== Player Information =====");
-            Console.WriteLine($"Name: {player.Name} | Health: {player.Health} | Money: {player.Money} | Location: {player.Location}");
+            Console.WriteLine($"Name: {player.Name} | Health: {player.Health} | Coin: {player.Money} | Location: {player.Location}");
             Console.WriteLine("Inventory:");
             player.ShowInventory();
             Console.WriteLine("==============================");
@@ -74,13 +75,56 @@ namespace Village
 
         private void Home()
         {
+            // Update the player's location immediately when they enter
             player.Location = "Home";
+            DisplayPlayerInfo();  // Show the updated location immediately
+
             Console.WriteLine("\nYou are at home.");
+
+            while (true)
+            {
+                Console.WriteLine("\nWhat would you like to do?");
+                Console.WriteLine("1. Rest (Increase Health by 20)");
+                Console.WriteLine("2. Return to main menu");
+
+                string homeChoice = Console.ReadLine();
+
+                if (homeChoice == "1")
+                {
+                    // Rest and increase health by 20
+                    RestAtHome();
+                }
+                else if (homeChoice == "2")
+                {
+                    return; // Go back to the main menu
+                }
+                else
+                {
+                    Console.WriteLine("Invalid choice. Please try again.");
+                }
+            }
+        }
+
+        private void RestAtHome()
+        {
+            if (player.Health < 100)
+            {
+                // Increase health by 20, but ensure health doesn't exceed 100
+                player.Health = Math.Min(player.Health + 20, 100);
+                Console.WriteLine("You rested and regained 20 health.");
+            }
+            else
+            {
+                Console.WriteLine("Your health is already at full.");
+            }
         }
 
         private void Garden()
         {
+            // Update the player's location immediately when they enter the Garden
             player.Location = "Garden";
+            DisplayPlayerInfo();  // Show the updated location immediately
+
             Console.WriteLine("\nYou are in the garden. Here are your crops:");
 
             while (true)
@@ -120,7 +164,10 @@ namespace Village
 
         private void Forest()
         {
+            // Update the player's location immediately when they enter the Forest
             player.Location = "Forest";
+            DisplayPlayerInfo();  // Show the updated location immediately
+
             Console.WriteLine("\nYou are in the forest.");
 
             // Random animal encounter every time the player enters the forest
@@ -148,10 +195,12 @@ namespace Village
 
         private void Village()
         {
+            // Update the player's location immediately when they enter the Village
             player.Location = "Village";
+            DisplayPlayerInfo();  // Show the updated location immediately
+
+            Console.WriteLine("\nYou are in the village.");
             village.Trade(player);
         }
     }
 }
-
-
